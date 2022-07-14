@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request, url_for, flash
 from flask_login import (
     current_user,
     login_user,
@@ -7,7 +7,7 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm
+from apps.authentication.forms import LoginForm, CreateAccountForm, ResetPasswordRequestForm
 from apps.authentication.models import Users
 
 from apps.authentication.util import verify_pass
@@ -16,8 +16,7 @@ from apps.authentication.util import verify_pass
 def route_default():
     return redirect(url_for('authentication_blueprint.login'))
 
-# Login & Registration
-
+#Login
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm(request.form)
@@ -46,7 +45,7 @@ def login():
     
     return redirect(url_for('home_blueprint.index'))
 
-
+#Registration
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     create_account_form = CreateAccountForm(request.form)
@@ -87,11 +86,29 @@ def register():
     else:
         return render_template('accounts/register.html', form=create_account_form)
 
-
+#Logout
 @blueprint.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('authentication_blueprint.login')) 
+
+#Reset password request
+@blueprint.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('home_blueprint.index'))
+    
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(email=form.email.data).first()
+        #if user:
+            #send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password')
+        return redirect(url_for('authentication_blueprint.login'))
+    
+    return render_template('accounts/reset_password_request.html', title='Reset Password', form=form)
+
+
 
 # Errors
 
