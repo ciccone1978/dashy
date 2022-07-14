@@ -1,6 +1,7 @@
 from flask_login import UserMixin
 from apps import db, login_manager
 from apps.authentication.util import hash_pass
+from hashlib import md5
 
 class Users(db.Model, UserMixin):
 
@@ -27,6 +28,10 @@ class Users(db.Model, UserMixin):
 
     def __repr__(self):
         return str(self.username)
+
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=wavatar&s={}'.format(digest, size)    
 
 
 @login_manager.user_loader
