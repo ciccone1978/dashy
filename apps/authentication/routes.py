@@ -7,10 +7,10 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm, ResetPasswordRequestForm
+from apps.authentication.forms import LoginForm, CreateAccountForm, ResetPasswordRequestForm, ResetPasswordForm
 from apps.authentication.models import Users
 
-from apps.authentication.util import verify_pass
+from apps.authentication.util import verify_pass, send_password_reset_email
 
 @blueprint.route('/')
 def route_default():
@@ -36,9 +36,8 @@ def login():
             return redirect(url_for('authentication_blueprint.route_default'))
 
         # Something (user or pass) is not ok
-        return render_template('accounts/login.html',
-                               msg='Wrong user or password',
-                               form=login_form)
+        flash('Wrong user or password', 'danger')
+        return render_template('accounts/login.html', msg='Wrong user or password', form=login_form)
 
     if not current_user.is_authenticated:
         return render_template('accounts/login.html', form=login_form)
@@ -101,13 +100,32 @@ def reset_password_request():
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(email=form.email.data).first()
-        #if user:
-            #send_password_reset_email(user)
-        flash('Check your email for the instructions to reset your password')
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password', 'info')
         return redirect(url_for('authentication_blueprint.login'))
     
     return render_template('accounts/reset_password_request.html', title='Reset Password', form=form)
 
+#reset password
+@blueprint.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home_blueprint.index'))
+
+    user = Users.verify_reset_password_token(token)
+    if not user:
+        flash('Invalid or expired token', 'danger')
+        return redirect(url_for('authentication_blueprint.login'))
+    
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been reset', 'info')
+        return redirect(url_for('authentication_blueprint.login'))
+    
+    return render_template('accounts/reset_password.html', form=form) 
 
 
 # Errors

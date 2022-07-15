@@ -1,7 +1,11 @@
+from flask import current_app
 from flask_login import UserMixin
 from apps import db, login_manager
-from apps.authentication.util import hash_pass
+from apps.authentication.util import hash_pass, verify_pass
 from hashlib import md5
+from time import time
+import jwt
+
 
 class Users(db.Model, UserMixin):
 
@@ -29,10 +33,28 @@ class Users(db.Model, UserMixin):
     def __repr__(self):
         return str(self.username)
 
+    def set_password(self, password):
+        self.password = hash_pass(password)
+
+    def check_password(self, password):
+        return verify_pass(password, self.password)
+
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=wavatar&s={}'.format(digest, size)    
 
+    def get_reset_password_token(self, expires_in=600):
+        #token expires in 'expires_in' seconds
+        return jwt.encode({'reset_password':self.id, 'exp':time()+expires_in}, current_app.config['SECRET_KEY'], algorithm='HS256')
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms='HS256')['reset_password']
+        except:
+            return None
+        
+        return Users.query.get(id)
 
 @login_manager.user_loader
 def user_loader(id):
