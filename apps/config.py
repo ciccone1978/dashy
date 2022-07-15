@@ -12,6 +12,13 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False 
 
     ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')    
+
+    MAIL_SERVER = os.getenv('MAIL_SERVER')
+    MAIL_PORT = os.getenv('MAIL_PORT')
+    MAIL_USE_TLS = os.getenv('MAIL_USE_TLS')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+    ADMINS = ['admin@dashy.com']
     
 #Production config
 class ProductionConfig(Config):
