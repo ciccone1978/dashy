@@ -1,3 +1,4 @@
+import email
 from flask import render_template, redirect, request, url_for, flash
 from flask_login import (
     current_user,
@@ -47,43 +48,30 @@ def login():
 #Registration
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-    create_account_form = CreateAccountForm(request.form)
-    if 'register' in request.form:
+    #logout_user()
+    #if current_user.is_authenticated:
+    #    return redirect(url_for('home_blueprint.index'))
 
-        username = request.form['username']
-        email = request.form['email']
+    form = CreateAccountForm()
+    if form.validate_on_submit():
+        firstname = form.firstname.data
+        lastname = form.lastname.data
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
 
-        # Check usename exists
-        user = Users.query.filter_by(username=username).first()
-        if user:
-            return render_template('accounts/register.html',
-                                   msg='Username already registered',
-                                   success=False,
-                                   form=create_account_form)
-
-        # Check email exists
-        user = Users.query.filter_by(email=email).first()
-        if user:
-            return render_template('accounts/register.html',
-                                   msg='Email already registered',
-                                   success=False,
-                                   form=create_account_form)
-
-        # else we can create the user
-        user = Users(**request.form)
+        #create new user
+        user = Users(username=username, email=email, password=password, firstname=firstname, lastname=lastname)
         db.session.add(user)
         db.session.commit()
 
         # Delete user from session
         logout_user()
 
-        return render_template('accounts/register.html',
-                               msg='User created successfully.',
-                               success=True,
-                               form=create_account_form)
+        flash('User created successfully', 'info')
+        return redirect(url_for('authentication_blueprint.login'))
 
-    else:
-        return render_template('accounts/register.html', form=create_account_form)
+    return render_template('accounts/register.html', form=form)
 
 #Logout
 @blueprint.route('/logout')
