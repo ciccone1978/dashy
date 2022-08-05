@@ -1,4 +1,5 @@
 import os
+import re
 import hashlib
 import binascii
 from apps.utils import send_email
@@ -11,8 +12,7 @@ def hash_pass(password):
     """Hash a password for storing."""
 
     salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-    pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'),
-                                  salt, 100000)
+    pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), salt, 100000)
     pwdhash = binascii.hexlify(pwdhash)
     return (salt + pwdhash)  # return bytes
 
@@ -38,3 +38,15 @@ def send_password_reset_email(user):
                recipients=[user.email],
                text_body=render_template('accounts/email_reset_password.txt', user=user, token=token),
                html_body=render_template('accounts/email_reset_password.html', user=user, token=token))
+
+def check_password_policy(password):
+        """
+        Password strenght policy
+        - at least 8 chars long {8,}
+        - at least 1 uppercase letter (?=.*?[A-Z])
+        - at lesst 1 lowercase letter (?=.*?[a-z])
+        - at least 1 digit (?=.*?[0-9])
+        - at least 1 special char (?=.*?[#?!@$%^&*-])
+        """
+        password_pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+        return re.match(password_pattern, password)

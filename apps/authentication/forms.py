@@ -1,8 +1,8 @@
-import re
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import Email, DataRequired, EqualTo, ValidationError, Length
 from apps.authentication.models import Users
+from apps.authentication.util import check_password_policy
 
 #login
 class LoginForm(FlaskForm):
@@ -12,6 +12,8 @@ class LoginForm(FlaskForm):
 
 #registration
 class CreateAccountForm(FlaskForm):
+    firstname = StringField('Firstname', validators=[DataRequired()])
+    lastname = StringField('Lastname', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -35,16 +37,7 @@ class CreateAccountForm(FlaskForm):
             raise ValidationError('Email already registered')
 
     def validate_password(self, password):
-        """
-        Password strenght policy
-        - at least 8 chars long {8,}
-        - at least 1 uppercase letter (?=.*?[A-Z])
-        - at lesst 1 lowercase letter (?=.*?[a-z])
-        - at least 1 digit (?=.*?[0-9])
-        - at least 1 special char (?=.*?[#?!@$%^&*-])
-        """
-        password_pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
-        if re.match(password_pattern, password.data) is None:
+        if check_password_policy(password.data) is None:
             raise ValidationError('Please use a stronger password')        
 
 #reset password request
@@ -55,5 +48,9 @@ class ResetPasswordRequestForm(FlaskForm):
 #reset password
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    password2 = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Submit')        
+
+    def validate_password(self, password):
+        if check_password_policy(password.data) is None:
+            raise ValidationError('Please use a stronger password')

@@ -1,9 +1,11 @@
+from email.policy import default
 from flask import current_app
 from flask_login import UserMixin
 from apps import db, login_manager
 from apps.authentication.util import hash_pass, verify_pass
 from hashlib import md5
 from time import time
+from datetime import date, datetime
 import jwt
 
 
@@ -15,6 +17,10 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(64), unique=True)
     password = db.Column(db.LargeBinary)
+    firstname = db.Column(db.String(64))
+    lastname = db.Column(db.String(64))
+    registration_date = db.Column(db.DateTime, default=datetime.utcnow)
+    password_change_date = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -35,6 +41,7 @@ class Users(db.Model, UserMixin):
 
     def set_password(self, password):
         self.password = hash_pass(password)
+        self.password_change_date = datetime.utcnow()
 
     def check_password(self, password):
         return verify_pass(password, self.password)

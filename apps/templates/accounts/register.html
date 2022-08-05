@@ -34,6 +34,38 @@
           {{ form.hidden_tag() }}
 
           <div class="input-group mb-3">
+            {{ form.firstname(placeholder="Firstname", class="form-control") }}
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+            {% if form.firstname.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.firstname.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="input-group mb-3">
+            {{ form.lastname(placeholder="Lastname", class="form-control") }}
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+            {% if form.lastname.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.lastname.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="input-group mb-3">
             {{ form.username(placeholder="Username", class="form-control") }}
             <div class="input-group-append">
               <div class="input-group-text">

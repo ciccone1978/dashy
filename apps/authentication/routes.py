@@ -54,12 +54,14 @@ def register():
 
     form = CreateAccountForm()
     if form.validate_on_submit():
+        firstname = form.firstname.data
+        lastname = form.lastname.data
         username = form.username.data
         email = form.email.data
         password = form.password.data
 
         #create new user
-        user = Users(username=username, email=email, password=password)
+        user = Users(username=username, email=email, password=password, firstname=firstname, lastname=lastname)
         db.session.add(user)
         db.session.commit()
 
