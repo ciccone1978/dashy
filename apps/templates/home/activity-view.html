@@ -1,0 +1,138 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Activity {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini text-sm {% endblock body_class %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- pace-progress -->
+  <link rel="stylesheet" href="/static/assets/plugins/pace-progress/themes/black/pace-theme-flat-top.css">
+  <!-- adminlte-->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+  <!--leaflet-->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin=""/>
+
+{% endblock stylesheets %}
+
+{% block content %}  
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-10">
+          </div>
+          <div class="col-sm-2">
+            <button type="button" class="btn btn-block btn-info btn-sm">Edit</button>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-sm-3">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                  <th>Statistics</th>
+                  <th></th>
+                </tr>
+              </thead>
+            <tbody>
+              <tr>
+                <td>Duration</td>
+                <td><span class="badge bg-light">03:30</span></td>
+              </tr>
+              <tr>
+                <td>Distance</td>
+                <td><span class="badge bg-light">70 km</span></td>
+              </tr>
+              <tr>
+                <td>Average speed</td>
+                <td><span class="badge bg-light">20 km/h</span></td>
+              </tr>
+              <tr>
+                <td>Uphill</td>
+                <td><span class="badge bg-light">600 m</span></td>
+              </tr>
+              <tr>
+                <td>Downhill</td>
+                <td><span class="badge bg-light">600 m</span></td>
+              </tr>
+              <tr>
+                <td>Highest point</td>
+                <td><span class="badge bg-light">750 m</span></td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-sm-9">
+        <!--MAP-->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <span class="badge badge-light"><i class="fas fa-bicycle"></i></span>
+                    <span class="badge badge-light">Bicycle Tour</span>
+                    <span class="badge badge-light"><i class="fas fa-clock"></i> 2 days ago</span>
+                </h3>
+            </div>
+            <div class="card-body">
+                <!--<img src="/static/assets/img/101013.jpg" alt="Photo 2" class="img-thumbnail">-->
+                <div id="map" style="height: 400px;"></div>
+            </div>
+        </div>  
+        <!--ELEVATION PROFILE-->
+        <div class="card">
+            <div class="card-body">
+                <img src="/static/assets/img/101012.jpg" alt="Photo 2" class="img-thumbnail">
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    </div>
+    </section>
+    <!-- /.content -->
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- pace-progress -->
+  <script src="/static/assets/plugins/pace-progress/pace.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.min.js"></script>
+  <!--leaflet-->
+  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
+
+  <script>
+
+	var map = L.map('map').setView([45.59, 9.27], 13);
+
+	var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+	}).addTo(map);
+
+</script>
+
+{% endblock javascripts %}
