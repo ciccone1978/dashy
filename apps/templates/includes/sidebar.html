@@ -41,7 +41,7 @@
             <a href="#" class="nav-link {% if 'index' in segment %} active {% endif %}">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                Folder
+                Dashboard
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -60,6 +60,49 @@
               </li>
             </ul>
           </li>
+          <!-- Activities -->
+          <li class="nav-item has-treeview {% if 'activities' in segment %} menu-open {% endif %}">
+            <a href="#" class="nav-link {% if 'activities' in segment %} active {% endif %}">
+              <i class="nav-icon fas fa-running"></i>
+              <p>
+                Activities
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/activities.html" class="nav-link {% if 'activities.html' in segment %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Activities</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Health Stats -->
+          <li class="nav-item has-treeview {% if 'health' in segment %} menu-open {% endif %}">
+            <a href="#" class="nav-link {% if 'health' in segment %} active {% endif %}">
+              <i class="nav-icon fas fa-heartbeat"></i>
+              <p>
+                Health
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/weight.html" class="nav-link {% if 'weight.html' in segment %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Weight</p>
+                </a>                
+              </li>
+              <li class="nav-item">
+                <a href="/steps.html" class="nav-link {% if 'steps.html' in segment %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Steps</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
